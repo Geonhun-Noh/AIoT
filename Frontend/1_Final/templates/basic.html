@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <nav>nav</nav>
+    <header class="bg-warning">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center p-4">
+                    <h1>KAKAO</h1>  
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                        Nemo praesentium modi quos quis assumenda explicabo, reprehenderit consequuntur eos iure voluptates?</p>
+                        <button class="btn btn-outline-dark">Button</button>   
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="bg-light p-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 text-center">
+                    <canvas width="300" height="300" id="myLineChart"></canvas>
+                </div>
+                <div class="col-lg-8 align-self-center">
+                    <h3>Explore & Connect</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque enim odio, praesentium sit repellat, 
+                        harum nesciunt esse laboriosam ut saepe id reiciendis consequuntur quia sequi autem explicabo modi temporibus. Saepe.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <ul class="col list-group">
+
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!-- <section>
+        <div class="container p-4">
+            <div class="row">
+                <div class="col-lg-2 bg-info">
+                    <h4>Explore & Connect</h4>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quasi officia accusantium atque soluta.</p>
+                </div>
+                <div class="col-lg-4 bg-primary" >
+                    <h4>Explore & Connect</h4>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque reiciendis quisquam dolorem magnam tempore tenetur consequatur, mollitia recusandae obcaecati quam molestiae iure! Aliquid excepturi iure porro nihil nostrum molestiae magnam.</p>
+                </div>
+                <div class="col-lg-6 bg-warning" >
+                        <h4>Explore & Connect</h4>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quasi officia accusantium atque soluta.</p>
+            </div>
+        </div>
+    </section> -->
+
+    <section>
+        <div class="container pt-5">
+            <div class="row">
+                <div class="col-6 align-self-center">
+                    <h3>근무시간 조회</h3>
+{#                    <div class="input-group">#}
+{#                        <input type="text" class="form-control" placeholder="아이디를 입력하세요">#}
+{#                        <button class="input-group-append btn btn-warning">Register</button>#}
+{#                    </div>#}
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="아이디를 입력하세요">
+                        <button class="input-group-append btn btn-warning">Register</button>
+                    </div>
+
+                </div>
+                <div class="col-6">
+                    <canvas width="500" height="400" id="myRadarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>footer</footer>
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+i   ntegrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+
+    <script>
+        getData('/sensor/led01/values/1',{},function(data){
+            console.log('data',parseData(data));
+            drawList(parseData(data));
+
+            drawRadarChart(parseData(data));
+        });
+
+        getData('/sensor/tprt01/values/1',{},function(data){
+            console.log('data',parseData(data));
+            drawList(parseData(data));
+
+            drawLineChart(parseData(data));
+        });
+        function getData(uri,data,fun){
+            $.ajax({ //호출하는 부분
+                url:'http://127.0.0.1:5000' + uri,
+                method:"GET",
+                data: JSON.stringify(data),
+                contentType:"application/json"
+            }).done(function (returnData) { //호출에 성공했을 경우
+                if (fun){
+                    fun(returnData);
+            }
+            }).fail(function () { //호출에 실패했을 경우
+                console.log('fail getData');
+            }).always(function (){// 성공여부에 관계없어 실행하고 싶을 때
+
+        });
+    };
+    function parseData(serverData){
+        var dataList = [];
+        for (var data of serverData.values){
+            dataList.push(data.value)
+        }
+        return dataList;
+    }
+
+    function drawList(chartData) {
+        var list = document.querySelector('.list-group');
+        while (list.firstChild){
+            list.removeChild(list.firstChild);
+        }
+        for (var item of chartData){
+            $(list).append('<li class="list-group-item">'+item+'</li>');
+        }
+    }
+
+    function drawRadarChart(chartData){
+        var lineCanvas = document.querySelector('#myRadarChart');
+        new Chart(lineCanvas, {
+            type : 'radar',
+            data : {
+                labels: chartData,
+                datasets: [{
+                    data: chartData,
+                    label:'lineChart',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)'
+                }]
+            }
+        });
+
+    }
+
+
+    function drawLineChart(chartData){
+        var lineCanvas = document.querySelector('#myLineChart');
+        new Chart(lineCanvas, {
+            type : 'line',
+            data : {
+                labels: chartData,
+                datasets: [{
+                    data: chartData,
+                    label:'lineChart',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)'
+                }]
+            }
+        });
+
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<script
+src="https://code.jquery.com/jquery-3.4.1.min.js"
+integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+crossorigin="anonymous"></script>
+
+<script> 
+
+getData('/sensor/led01/values/1',{},undefined);
+function getData(uri,data,fun){
+    $.ajax({ //호출하는 부분
+        url:'http://127.0.0.1:5000' + uri,
+        method:"GET",
+        data: JSON.stringify(data),
+        contentType:"application/json"
+    }).done(function (returnData) { //호출에 성공했을 경우
+        if (fun){
+            fun(returnData);
+        }
+    }).fail(function () { //호출에 실패했을 경우
+        console.log('fail getData');
+    }).always(function (){// 성공여부에 관계없어 실행하고 싶을 때
+
+    });
+};
+
+
+</script>
+</body>
+</html>

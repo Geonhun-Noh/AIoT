@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<script>
+//함수표현식
+var multiply = function(a,b){
+    return a*b;
+}
+
+//함수선언식
+function add(a,b){
+    return a+b;
+}
+
+//익명함수 + 즉시 실행
+(function(ad){
+    console.log('익명함수,즉시실행',ad);
+})(33);
+
+add.status='OK';
+add.say = function(){
+    console.log('Hello World');
+}
+
+
+function addReturn(a,b){
+    return function() {
+        console.log(a+b);
+    }
+}
+
+var result = addReturn(1,2);
+console.log(result);
+console.log(result());
+
+
+function addParameter(fun) {
+    fun();
+}
+
+addParameter(function() {
+    console.log('show2222');
+});
+
+
+
+
+
+</script>    
+    
+</body>
+</html>
